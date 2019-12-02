@@ -8,7 +8,7 @@ import PropTypes from 'prop-types'
 import { FormDataContext } from './context'
 import { isEmpty, isFunction, isRegExp } from './util'
 
-// default Type to get value
+// default way to get value
 const DefaultWayToGetValue = (val) => val
 
 let id = 0
@@ -23,7 +23,7 @@ let id = 0
  */
 const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, config = {}) => {
 
-  class ResComponent extends Component {
+  class FormItemComponent extends Component {
     constructor (props) {
       super(props)
       const { defaultValue, value, bn, verify, verifyMsg } = props
@@ -75,8 +75,8 @@ const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, conf
 
       const baseInfo = {
         id: this.id,
-        item: this.compRef,
         val,
+        vm: this,
         verifyMsg: this.verifyMsg
       }
 
@@ -160,7 +160,7 @@ const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, conf
     }
   }
 
-  ResComponent.propTypes = {
+  FormItemComponent.propTypes = {
     value: PropTypes.any,
     defaultValue: PropTypes.any,
     bn: PropTypes.string,
@@ -169,7 +169,7 @@ const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, conf
     verifyMsg: PropTypes.any
   }
 
-  return ResComponent
+  return FormItemComponent
 }
 
 export default withFormContext
