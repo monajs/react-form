@@ -1,0 +1,35 @@
+.page-form-item {
+  padding: 3px 0;
+  .label {
+    font-size: 14px;
+    color: rgba(37, 37, 37, 1);
+    padding: 0 15px 0 0;
+    text-align: right;
+    line-height: 32px;
+    font-weight: bold;
+    &.required {
+      &::before {
+        content: '*';
+        color: #ff3c00;
+        margin-right: 3px;
+      }
+    }
+  }
+  .content {
+    line-height: 32px;
+    padding: 0 15px 0 0;
+  }
+  .error, .desc {
+    line-height: 16px;
+    margin-left: 10px;
+    font-size: 12px;
+    margin-top: 3px;
+    color: #ff3c00;
+  }
+  .desc {
+    color: rgba(107, 107, 107, 1);
+  }
+  & + .page-form-item {
+    margin-top: 10px;
+  }
+}

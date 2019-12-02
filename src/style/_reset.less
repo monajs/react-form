@@ -1,0 +1,164 @@
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	/* font-size:100%; */
+	vertical-align: baseline;
+	background: transparent;
+}
+
+html {
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body {
+	line-height: @global-line-height;
+	font-family: @global-font-family;
+	font-size: @global-font-size;
+	color: @global-color;
+}
+
+html, body {
+	height: 100%;
+}
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+
+nav ul {
+	list-style: none;
+}
+
+blockquote, q {
+	quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+
+a {
+	margin: 0;
+	padding: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+	text-decoration: none;
+	color: @global-primary-color;
+	transition: color 0.3s ease;
+
+	&:hover {
+		color: @global-primary-color;
+	}
+}
+
+/* change colours to suit your needs */
+ins {
+	background-color: #ff9;
+	color: #000;
+	text-decoration: none;
+}
+
+/* change colours to suit your needs */
+mark {
+	background-color: #ff9;
+	color: #000;
+	font-style: italic;
+	font-weight: bold;
+}
+
+del {
+	text-decoration: line-through;
+}
+
+abbr[title], dfn[title] {
+	border-bottom: 1px dotted;
+	cursor: help;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* change border colour to suit your needs */
+hr {
+	display: block;
+	height: 1px;
+	border: 0;
+	border-top: 1px solid #f5f5f5;
+	margin: 1em 0;
+	padding: 0;
+}
+
+button, input, select, textarea {
+	/** vertical-align:middle; */
+	/** font-size:@text-normal; */
+	outline: 0;
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	color: inherit;
+}
+
+input[type=checkbox],
+input[type=email],
+input[type=number],
+input[type=password],
+input[type=radio],
+input[type=search],
+input[type=tel],
+input[type=text],
+textarea {
+	-webkit-user-select: text;
+	-webkit-appearance: none;
+}
+
+input[type=button],
+select {
+	-webkit-appearance: none;
+}
+
+/* stylelint-disable no-descending-specificity */
+textarea::-webkit-input-placeholder,
+input::-webkit-input-placeholder {
+	color: rgba(0, 0, 0, 0.25);
+}
+
+textarea:-moz-placeholder,
+input:-moz-placeholder {
+	color: rgba(0, 0, 0, 0.25);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+}
+
+input[type="number"] {
+	-moz-appearance: textfield;
+}
+
+/* stylelint-disable */
+
+* {
+	box-sizing: border-box;
+}
