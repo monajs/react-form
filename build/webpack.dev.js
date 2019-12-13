@@ -51,7 +51,7 @@ config.module.rules = config.module.rules.concat([
   {
     test: /\.(less|css)$/,
     include: /node_modules/,
-    exclude: /src/,
+    exclude: /example/,
     use: [
       'style-loader',
       'css-loader',

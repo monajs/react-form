@@ -6,7 +6,7 @@
 const path = require('path')
 
 const serverConf = {
-  contentBase: path.resolve(__dirname, '../src'),
+  contentBase: path.resolve(__dirname, '../example'),
   progress: false,
   hot: true,
   inline: true,

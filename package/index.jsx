@@ -92,13 +92,13 @@ class Form extends Component {
   getFormData = () => {
     // reset formData
     this.formData = {}
-    !isProd && performance.start('collect formData')
+    !isProd && performance.start('collect-formData')
 
     for (const key in this.itemMap) {
       const vm = this.itemMap[key]
       vm && vm.subscibeHandler && vm.subscibeHandler()
     }
-    !isProd && performance.end('collect formData')
+    !isProd && performance.end('collect-formData')
     return this.formData
   }
 

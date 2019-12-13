@@ -51,11 +51,11 @@ log.table = (list) => {
 function getViews () {
 	const chunks = []
 
-	const _path = './src/views'
+	const _path = './example/views'
 	glob.sync(_path + '/**/*.js', {
 		matchBase: true
 	}).forEach(function (entry) {
-		const label = entry.replace('./src/views/', '').replace('/index.js', '')
+		const label = entry.replace('./example/views/', '').replace('/index.js', '')
 		chunks.push(label)
 	})
 	return chunks

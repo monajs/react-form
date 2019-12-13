@@ -24,22 +24,20 @@ export const isRegExp = (arg) => {
 
 export const isProd = process.env.NODE_ENV === 'production'
 
-const symbol = function (type = 'log') {
-  console.log(`%c ----------- @monajs/react-form/${type} ----------- `, 'color: #048ffd; font-weight: bold; font-size: 12px')
-}
+const symbol = '[@monajs/react-form] '
 
 export const log = function () {
-  symbol()
-  console.log(arguments)
+  console.log(symbol + arguments)
 }
 
 export const performance = {
   start: function () {
-    symbol('performance')
-    console.time(...arguments)
+    const [key, ...other] = arguments
+    console.time(symbol + key, ...other)
   },
   end: function () {
-    console.timeEnd(...arguments)
+    const [key, ...other] = arguments
+    console.timeEnd(symbol + key, ...other)
   }
 }
 

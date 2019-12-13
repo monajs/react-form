@@ -9,7 +9,7 @@ const NODE_ENV = process.env.NODE_ENV
 
 module.exports = {
   entry: {
-    app: ['./src/app.jsx']
+    app: ['./example/app.jsx']
   },
   output: {},
 
@@ -19,7 +19,7 @@ module.exports = {
       path.resolve('node_modules')
     ],
     alias: {
-      '@': path.resolve('src'),
+      '@': path.resolve('example'),
       '@monajs/react-form': path.resolve('package/index.jsx')
     }
   },
@@ -36,7 +36,7 @@ module.exports = {
       test: /\.(js|jsx)$/,
       loader: 'eslint-loader',
       exclude: /node_modules/,
-      include: [path.resolve('src')],
+      include: [path.resolve('example')],
       options: {
         // formatter: require('eslint-friendly-formatter'),
         emitWarning: false
@@ -44,7 +44,7 @@ module.exports = {
     }, {
       test: /\.(js|jsx)$/,
       loader: 'babel-loader',
-      include: [path.resolve('src'), path.resolve('package')],
+      include: [path.resolve('example'), path.resolve('package')],
       options: {
         // This is a feature of `babel-loader` for webpack (not Babel itself).
         // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -79,7 +79,7 @@ module.exports = {
   plugins: [
     new StyleLintPlugin({
       // 正则匹配想要lint监测的文件
-      files: ['src/style/*.less', 'src/views/**/*.less']
+      files: ['example/style/*.less', 'example/views/**/*.less']
     })
   ]
 }

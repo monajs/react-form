@@ -60,7 +60,7 @@ config.module.rules = config.module.rules.concat([
   // 处理 antd 的css|less 不兼容 css module
   {
     test: /\.(less|css)$/,
-    exclude: /src/,
+    exclude: /example/,
     include: /node_modules/,
     use: ExtractTextPlugin.extract({
       use: [
