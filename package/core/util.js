@@ -26,8 +26,13 @@ export const isProd = process.env.NODE_ENV === 'production'
 
 const symbol = '[@monajs/react-form] '
 
-export const log = function () {
-  console.log(symbol + arguments)
+export const log = {
+  warn: function (msg) {
+    console.error(symbol + 'Warning: ' + msg)
+  },
+  info: function (msg) {
+    console.log(symbol + arguments)
+  }
 }
 
 export const performance = {

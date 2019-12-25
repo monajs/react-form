@@ -6,7 +6,7 @@
 
 import React, { Component } from 'react'
 import { FormDataContext, FormVerifyContext } from './core/context'
-import { isProd, performance } from './core/util'
+import { isProd, performance, log } from './core/util'
 import PropTypes from 'prop-types'
 import Proxy from './proxy'
 import withVerifyContext from './core/withVerifyContext'
@@ -30,14 +30,13 @@ class Form extends Component {
         cancelWatcher: this.cancelWatcher.bind(this)
       },
       verifyContextValue: {}
-
     }
   }
 
   // cancel watcher
-  // form item unMount
+  // form member unMount
   cancelWatcher = (bn) => {
-    delete this.itemMap[bn]
+    this.itemMap.delete(bn)
     this.verifyBnWithOrder = this.verifyBnWithOrder.filter((v) => v.key !== bn)
     this.setState((prevState) => ({
       verifyContextValue: {
@@ -48,16 +47,21 @@ class Form extends Component {
   }
 
   // subscibe report event
+  // return subscibe result
   subscibeReport = (bn, vm) => {
-    if (this.itemMap[bn]) return
-    this.itemMap[bn] = vm
+    if (this.itemMap.has(bn)) {
+      !isProd && log.warn(`Encountered two form member with the same \`bn\`, \`bn\`: "${bn}" should be unique so that form collect their value correctly.`)
+      return false
+    }
+    this.itemMap.set(bn, vm)
     if (vm.verify) this.verifyBnWithOrder.push({ key: bn, vm })
+    return true
   }
 
-  // events map
-  itemMap = {}
+  // form member map
+  itemMap = new Map()
 
-  // save the order of form item
+  // save the order of form member
   verifyBnWithOrder = []
 
   // data source
@@ -79,11 +83,10 @@ class Form extends Component {
     return verifyResList
   }
 
-  // reset form
+  // reset all form members
   reset = () => {
     this.formData = {}
-    for (const key in this.itemMap) {
-      const vm = this.itemMap[key]
+    for (const vm of this.itemMap.values()) {
       vm && vm.reset && vm.reset()
     }
   }
@@ -92,13 +95,12 @@ class Form extends Component {
   getFormData = () => {
     // reset formData
     this.formData = {}
-    !isProd && performance.start('collect-formData')
+    !isProd && performance.start('collect formData')
 
-    for (const key in this.itemMap) {
-      const vm = this.itemMap[key]
+    for (const vm of this.itemMap.values()) {
       vm && vm.subscibeHandler && vm.subscibeHandler()
     }
-    !isProd && performance.end('collect-formData')
+    !isProd && performance.end('collect formData')
     return this.formData
   }
 

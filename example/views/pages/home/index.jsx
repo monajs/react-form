@@ -64,12 +64,12 @@ const Home = () => {
             <Form.Proxy
               style={{ width: 300 }}
               to={Select}
-              bn='other'
+              bn='age'
               verify={(val) => val === '3'}
               verifyMsg={(verify) => verify.val}
               placeholder='请输入other'>
-              <Option key={'3'} value='3'>3</Option>
-              <Option key={'4'} value='4'>4</Option>
+              <Option key='3' value='3'>3</Option>
+              <Option key='4' value='4'>4</Option>
             </Form.Proxy>
           </FormItem>
         </Col>

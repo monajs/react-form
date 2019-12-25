@@ -6,7 +6,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { FormDataContext } from './context'
-import { isEmpty, isFunction, isRegExp } from './util'
+import { isEmpty, isFunction, isRegExp, isProd, log } from './util'
 
 // default way to get value
 const DefaultWayToGetValue = (val) => val
@@ -28,10 +28,20 @@ const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, conf
       super(props)
       const { defaultValue, value, bn, verify, verifyMsg } = props
 
+      this.inited = false
       this.id = id++
       this.bn = bn || config.bn
+      if (!this.bn) {
+        !isProd && log.warn('The prop `bn` is required for form member, but its value is `undefined`.')
+      }
       this.verify = verify || config.verify
       this.verifyMsg = verifyMsg || config.verifyMsg
+      if (this.verify && !this.verifyMsg) {
+        !isProd && log.warn('The prop `verifyMsg` is required with form member when `verify` is accessed, but its value is `undefined`.')
+      }
+      if (!this.verify && this.verifyMsg) {
+        !isProd && log.warn('The prop `verifyMsg` is unnecessary with form member when `verify` is not accessed.')
+      }
       this.state = {
         val: value || defaultValue
       }
@@ -41,10 +51,12 @@ const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, conf
     reportHandler = null
     verifyReport = null
     cancelWatcher = null
+    subscibeStatus = true
     verifyPass = true
 
     componentWillUnmount () {
-      this.cancelWatcher && this.cancelWatcher(this.bn)
+      // cancel subscibe when already subscibed
+      this.subscibeStatus && this.cancelWatcher && this.cancelWatcher(this.bn)
     }
 
     // subscibe report handler
@@ -147,10 +159,13 @@ const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, conf
       return (
         <FormDataContext.Consumer>
           {({ report, verify, subscibeReport, cancelWatcher }) => {
-            this.reportHandler = report
-            this.cancelWatcher = cancelWatcher
-            this.verifyReport = (verifyInfo) => verify(this.bn, verifyInfo)
-            subscibeReport(this.bn, this)
+            if (!this.inited) {
+              this.reportHandler = report
+              this.cancelWatcher = cancelWatcher
+              this.verifyReport = (verifyInfo) => verify(this.bn, verifyInfo)
+              this.subscibeStatus = subscibeReport(this.bn, this)
+              this.inited = true
+            }
             return (
               <WrappedComponent ref={this.compRef} value={val} onChange={this.changeHandler} {...other} />
             )

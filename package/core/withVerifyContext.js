@@ -20,10 +20,9 @@ function withVerifyContext (WrappedComponent) {
     const getVerifyMsg = (verifyInfo) => {
       const verify = verifyInfo[bn] || {}
       const { verifyMsg } = verify
-      if (!verifyMsg) return ''
+      if (!verifyMsg) return
       if (typeof verifyMsg === 'string' || typeof verifyMsg === 'number') return '' + verifyMsg
       if (isFunction(verifyMsg)) return '' + verifyMsg(verify)
-      return ''
     }
 
     return (
