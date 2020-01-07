@@ -53,18 +53,19 @@ const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, conf
     }
 
     devWarning = () => {
+      if (isProd) return
       if (!this.bn) {
         const CompInfo = `{Component: \`${WrappedComponent.name}\`, id: ${id}}`
-        !isProd && log.warn(`The prop \`bn\` is required for form member (${CompInfo}), but its value is \`undefined\`.`)
+        log.warn(`The prop \`bn\` is required for form member (${CompInfo}), but its value is \`undefined\`.`)
         if (this.verify || this.verifyMsg) {
-          !isProd && log.warn(`The prop \`bn\` is missed with Component（${CompInfo}）.If you want to use original Component, then the prop \`verify\` and \`verifyMsg\` is needless.`)
+          log.warn(`The prop \`bn\` is missed with Component（${CompInfo}）.If you want to use original Component, then the prop \`verify\` and \`verifyMsg\` is needless.`)
         }
       }
       if (this.verify && !this.verifyMsg) {
-        !isProd && log.warn('The prop `verifyMsg` is required with form member when `verify` is accessed, but its value is `undefined`.')
+        log.warn('The prop `verifyMsg` is required with form member when `verify` is accessed, but its value is `undefined`.')
       }
       if (!this.verify && this.verifyMsg) {
-        !isProd && log.warn('The prop `verifyMsg` is unnecessary with form member when `verify` is not accessed.')
+        log.warn('The prop `verifyMsg` is unnecessary with form member when `verify` is not accessed.')
       }
     }
 
