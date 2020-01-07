@@ -43,7 +43,7 @@ const Home = () => {
             <Form.Proxy
               style={{ width: 300 }}
               to={Select}
-              bn='scholl'
+              bn='a[0].scholl'
               placeholder='请输入'>
               <Option key={'1'} value='1'>1</Option>
               <Option key={'2'} value='2'>2</Option>
@@ -54,17 +54,17 @@ const Home = () => {
       <Row>
         <If condition={input === 'ss'}>
           <Col span={8} className='p-15'>
-            <FormItem bn='age'>
-              <Form.Proxy to={Input} bn='age' getValue={(val) => val.target.value} verify={(val) => val === 'bbb'} verifyMsg='请检查事input实上' />
+            <FormItem bn='a[0].age'>
+              <Form.Proxy to={Input} bn='a[0].age' getValue={(val) => val.target.value} verify={(val) => val === 'bbb'} verifyMsg='请检查事input实上' />
             </FormItem>
           </Col>
         </If>
         <Col span={8} className='p-15'>
-          <FormItem bn='other' label='下拉框' desc='请选择' required>
+          <FormItem bn='a[0].other' label='下拉框' desc='请选择' required>
             <Form.Proxy
               style={{ width: 300 }}
               to={Select}
-              bn='age'
+              bn='a[0].other'
               verify={(val) => val === '3'}
               verifyMsg={(verify) => verify.val}
               placeholder='请输入other'>

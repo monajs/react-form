@@ -6,7 +6,7 @@
 
 import React, { Component } from 'react'
 import { FormDataContext, FormVerifyContext } from './core/context'
-import { isProd, performance, log } from './core/util'
+import { isProd, performance, log, isPlainObject } from './core/util'
 import PropTypes from 'prop-types'
 import Proxy from './proxy'
 import withVerifyContext from './core/withVerifyContext'
@@ -151,7 +151,10 @@ class Form extends Component {
               d[item] = val
               return
             }
-            d[item] = {}
+            // check is already object
+            if (!isPlainObject(d[item])) {
+              d[item] = {}
+            }
             d = d[item]
             return
           }

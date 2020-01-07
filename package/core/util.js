@@ -47,3 +47,26 @@ export const performance = {
 }
 
 export const getValue = (e = {}) => e.target.value
+
+/**
+ * get real type
+ *
+ * @example
+ * _typeof({}) // object
+ * _typeof([]) // array
+ * _typeof('') // string
+ * _typeof(1) // number
+ * _typeof(null) // null
+ * _typeof(undefined) // undefined
+ *
+ */
+export const _typeof = (obj) => {
+  return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase()
+}
+
+/**
+ * check is object. response will be boolean
+ */
+export const isPlainObject = (obj) => {
+  return _typeof(obj) === 'object'
+}
