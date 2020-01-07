@@ -11,10 +11,7 @@ import PropTypes from 'prop-types'
 import Proxy from './proxy'
 import withVerifyContext from './core/withVerifyContext'
 import withFormContext from './core/withFormContext'
-
-// patern：a[0][1][2]
-// limit the length of array, max: 999
-const keyChainReg = /^(\w+)((\[[0-9]{1,3}\])+)$/g
+import collectFormData from './core/collectFormData'
 
 // Why class Component?
 // In order to use React.createRef
@@ -25,7 +22,7 @@ class Form extends Component {
       formDataContextValue: {
         subscibeReport: this.subscibeReport.bind(this),
         // callback and common data of FormDataContext
-        report: this.collectFormData.bind(this),
+        report: (key, val) => collectFormData(this.formData, key, val),
         verify: this.verifyHandler.bind(this),
         cancelWatcher: this.cancelWatcher.bind(this)
       },
@@ -113,58 +110,6 @@ class Form extends Component {
         [bn]: verifyInfo === true ? null : verifyInfo
       }
     }))
-  }
-
-  // collect form data
-  // suppot key chain
-  // like a.b.c or a[0].b.c or a.b[1][0][2].c
-  collectFormData = (key, val) => {
-    const keyChain = key.split('.')
-    const len = keyChain.length
-    let d = this.formData
-    keyChain.forEach((k, i) => {
-      const keyParseList = keyChainReg.exec(k)
-      if (!keyParseList) {
-        // handle the patern of json
-        if (i === len - 1) {
-          d[k] = val
-          return
-        }
-        if (!d[k]) {
-          d[k] = {}
-        }
-        d = d[k]
-      } else {
-        // handle the patern of array
-        k = keyParseList[1]
-        if (!Array.isArray(d[k])) {
-          d[k] = []
-        }
-        d = d[k]
-        let items = keyParseList[2] // [0][1][2]
-        items = items.substring(1, items.length - 1).split('][') // [0,1,2]
-        items.forEach((item, j) => {
-          // then end of item array
-          if (j === items.length - 1) {
-            // the end of chain
-            if (i === len - 1) {
-              d[item] = val
-              return
-            }
-            // check is already object
-            if (!isPlainObject(d[item])) {
-              d[item] = {}
-            }
-            d = d[item]
-            return
-          }
-          if (!Array.isArray(d[item])) {
-            d[item] = []
-          }
-          d = d[item]
-        })
-      }
-    })
   }
 
   render () {
