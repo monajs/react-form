@@ -31,17 +31,10 @@ const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, conf
       this.inited = false
       this.id = id++
       this.bn = bn || config.bn
-      if (!this.bn) {
-        !isProd && log.warn('The prop `bn` is required for form member, but its value is `undefined`.')
-      }
       this.verify = verify || config.verify
       this.verifyMsg = verifyMsg || config.verifyMsg
-      if (this.verify && !this.verifyMsg) {
-        !isProd && log.warn('The prop `verifyMsg` is required with form member when `verify` is accessed, but its value is `undefined`.')
-      }
-      if (!this.verify && this.verifyMsg) {
-        !isProd && log.warn('The prop `verifyMsg` is unnecessary with form member when `verify` is not accessed.')
-      }
+
+      this.devWarning()
       this.state = {
         val: value || defaultValue
       }
@@ -57,6 +50,22 @@ const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, conf
     componentWillUnmount () {
       // cancel subscibe when already subscibed
       this.subscibeStatus && this.cancelWatcher && this.cancelWatcher(this.bn)
+    }
+
+    devWarning = () => {
+      if (!this.bn) {
+        const CompInfo = `{Component: \`${WrappedComponent.name}\`, id: ${id}}`
+        !isProd && log.warn(`The prop \`bn\` is required for form member (${CompInfo}), but its value is \`undefined\`.`)
+        if (this.verify || this.verifyMsg) {
+          !isProd && log.warn(`The prop \`bn\` is missed with Component（${CompInfo}）.If you want to use original Component, then the prop \`verify\` and \`verifyMsg\` is needless.`)
+        }
+      }
+      if (this.verify && !this.verifyMsg) {
+        !isProd && log.warn('The prop `verifyMsg` is required with form member when `verify` is accessed, but its value is `undefined`.')
+      }
+      if (!this.verify && this.verifyMsg) {
+        !isProd && log.warn('The prop `verifyMsg` is unnecessary with form member when `verify` is not accessed.')
+      }
     }
 
     // subscibe report handler
@@ -151,10 +160,12 @@ const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, conf
       /* eslint-disable no-unused-vars */
 
       const { val } = this.state
-      if (!this.bn) return (
-        // if prop `bn` missed, return the origin element
-        <WrappedComponent {...this.props} />
-      )
+      if (!this.bn) {
+        return (
+          // if prop `bn` missed, return the origin element
+          <WrappedComponent {...this.props} />
+        )
+      }
 
       return (
         <FormDataContext.Consumer>

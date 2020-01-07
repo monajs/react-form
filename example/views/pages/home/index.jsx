@@ -41,9 +41,9 @@ const Home = () => {
         <Col span={8} className='p-15'>
           <FormItem bn='scholl' label='下拉框' required>
             <Form.Proxy
+              bn='scholl'
               style={{ width: 300 }}
               to={Select}
-              bn='a[0][1].scholl'
               placeholder='请输入'>
               <Option key={'1'} value='1'>1</Option>
               <Option key={'2'} value='2'>2</Option>
