@@ -1,12 +1,12 @@
 {
   "name": "@monajs/react-form",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "最简单的 React 表单组件",
   "scripts": {
     "start": "node ./build/webpack.dev.js",
     "build": "node ./build/webpack.build.js",
     "compile": "rm -rf lib && export BABEL_ENV=package && babel package --out-dir lib --copy-files",
-    "lint": "eslint --fix --ext .js,.jsx src && stylelint ./src/style/*.less ./src/views/**/*.less --fix"
+    "lint": "eslint --fix --ext .js,.jsx example && stylelint ./example/style/*.less ./example/views/**/*.less --fix"
   },
   "husky": {
     "hooks": {

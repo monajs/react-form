@@ -22,6 +22,16 @@ let id = 0
  * @returns {function(*)}
  */
 const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, config = {}) => {
+  // when WrappedComponent is already withFormContext
+  if (WrappedComponent._isWithFormContext) {
+    !isProd && log.warn(`If you are using the \`Proxy\` components, please check if the prop \`to\`（${WrappedComponent._cname}） is already powered with \`withFormContext\`.`)
+    const C = (props) => {
+      return (
+        <WrappedComponent {...props} {...config} />
+      )
+    }
+    return C
+  }
 
   class FormItemComponent extends Component {
     constructor (props) {
@@ -54,15 +64,18 @@ const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, conf
 
     devWarning = () => {
       if (isProd) return
+
+      const CompInfo = `{Component: \`${WrappedComponent.name}\`, id: ${this.id}}`
       if (!this.bn) {
-        const CompInfo = `{Component: \`${WrappedComponent.name}\`, id: ${id}}`
         log.warn(`The prop \`bn\` is required for form member (${CompInfo}), but its value is \`undefined\`.`)
         if (this.verify || this.verifyMsg) {
           log.warn(`The prop \`bn\` is missed with Component（${CompInfo}）.If you want to use original Component, then the prop \`verify\` and \`verifyMsg\` is needless.`)
         }
+        return
       }
       if (this.verify && !this.verifyMsg) {
         log.warn('The prop `verifyMsg` is required with form member when `verify` is accessed, but its value is `undefined`.')
+        return
       }
       if (!this.verify && this.verifyMsg) {
         log.warn('The prop `verifyMsg` is unnecessary with form member when `verify` is not accessed.')
@@ -195,6 +208,9 @@ const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, conf
     verify: PropTypes.any,
     verifyMsg: PropTypes.any
   }
+
+  FormItemComponent._cname = WrappedComponent.name
+  FormItemComponent._isWithFormContext = true
 
   return FormItemComponent
 }
