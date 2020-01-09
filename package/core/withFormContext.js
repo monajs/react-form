@@ -24,7 +24,7 @@ let id = 0
 const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, config = {}) => {
   // when WrappedComponent is already withFormContext
   if (WrappedComponent._isWithFormContext) {
-    !isProd && log.warn(`If you are using the \`Proxy\` components, please check if the prop \`to\`（${WrappedComponent._cname}） is already powered with \`withFormContext\`.`)
+    !isProd && log.warn(`If you are using the \`Proxy\` components, please check if the prop \`to\`（${WrappedComponent._cname}） is already powered with \`withFormContext\`?`, 'https://github.com/monajs/react-form/issues/2')
     const C = (props) => {
       return (
         <WrappedComponent {...props} {...config} />
@@ -67,18 +67,18 @@ const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, conf
 
       const CompInfo = `{Component: \`${WrappedComponent.name}\`, id: ${this.id}}`
       if (!this.bn) {
-        log.warn(`The prop \`bn\` is required for form member (${CompInfo}), but its value is \`undefined\`.`)
+        log.warn(`The prop \`bn\` is required with form member (${CompInfo}), but its value is \`undefined\`.`, 'https://github.com/monajs/react-form/issues/6')
         if (this.verify || this.verifyMsg) {
-          log.warn(`The prop \`bn\` is missed with Component（${CompInfo}）.If you want to use original Component, then the prop \`verify\` and \`verifyMsg\` is needless.`)
+          log.warn(`The prop \`bn\` is missed with Component（${CompInfo}）.If you want to use original Component, then the prop \`verify\` and \`verifyMsg\` is needless.`, 'https://github.com/monajs/react-form/issues/3')
         }
         return
       }
       if (this.verify && !this.verifyMsg) {
-        log.warn('The prop `verifyMsg` is required with form member when `verify` is accessed, but its value is `undefined`.')
+        log.warn('The prop `verifyMsg` is required with form member when `verify` is accessed, but its value is `undefined`.', 'https://github.com/monajs/react-form/issues/4')
         return
       }
       if (!this.verify && this.verifyMsg) {
-        log.warn('The prop `verifyMsg` is unnecessary with form member when `verify` is not accessed.')
+        log.warn('The prop `verifyMsg` is unnecessary with form member when `verify` is not accessed.', 'https://github.com/monajs/react-form/issues/5')
       }
     }
 
@@ -183,7 +183,13 @@ const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, conf
 
       return (
         <FormDataContext.Consumer>
-          {({ report, verify, subscibeReport, cancelWatcher }) => {
+          {(formMessage) => {
+            if (!formMessage) {
+              !isProd && log.warn('The Component `Form` is necessary as the container, please check if all the form member is wrapped by the `Form`?', 'https://github.com/monajs/react-form/issues/1')
+              return <WrappedComponent {...this.props} />
+            }
+            formMessage = formMessage || {}
+            const { report, verify, subscibeReport, cancelWatcher } = formMessage
             if (!this.inited) {
               this.reportHandler = report
               this.cancelWatcher = cancelWatcher

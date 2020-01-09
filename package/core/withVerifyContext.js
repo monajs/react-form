@@ -17,7 +17,7 @@ function withVerifyContext (WrappedComponent) {
       return (<WrappedComponent {...other} />)
     }
 
-    const getVerifyMsg = (verifyInfo) => {
+    const getVerifyMsg = (verifyInfo = {}) => {
       const verify = verifyInfo[bn] || {}
       const { verifyMsg } = verify
       if (!verifyMsg) return
@@ -27,9 +27,14 @@ function withVerifyContext (WrappedComponent) {
 
     return (
       <FormVerifyContext.Consumer>
-        {(verifyInfo = {}) => (
-          <WrappedComponent verifyMsg={getVerifyMsg(verifyInfo)} {...other} />
-        )}
+        {(verifyInfo) => {
+          if (!verifyInfo) {
+            return (<WrappedComponent {...other} />)
+          }
+          return (
+            <WrappedComponent verifyMsg={getVerifyMsg(verifyInfo)} {...other} />
+          )
+        }}
       </FormVerifyContext.Consumer>
     )
   }

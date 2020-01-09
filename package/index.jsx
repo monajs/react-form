@@ -47,7 +47,7 @@ class Form extends Component {
   // return subscibe result
   subscibeReport = (bn, vm) => {
     if (this.itemMap.has(bn)) {
-      !isProd && log.warn(`Encountered two form member with the same \`bn\`, \`bn\`: "${bn}" should be unique so that form collect their value correctly.`)
+      !isProd && log.warn(`Encountered two form member with the same \`bn\`, \`bn\`: "${bn}" should be unique so that form collect their value correctly.`, 'https://github.com/monajs/react-form/issues/7')
       return false
     }
     this.itemMap.set(bn, vm)

@@ -27,11 +27,13 @@ export const isProd = process.env.NODE_ENV === 'production'
 const symbol = '[@monajs/react-form] '
 
 export const log = {
-  warn: function (msg) {
-    console.error(symbol + 'Warning: ' + msg)
+  warn: function (msg, link) {
+    const reference = 'Reference: ' + link
+    console.error(symbol + 'Warning: ' + msg + (link ? '\n' + reference : ''))
   },
   info: function (msg) {
-    console.log(symbol + arguments)
+    const reference = 'Reference' + link
+    console.error(symbol + 'Info: ' + msg + (link ? '\n' + reference : ''))
   }
 }
 
