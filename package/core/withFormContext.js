@@ -9,7 +9,7 @@ import { FormDataContext } from './context'
 import { isEmpty, isFunction, isRegExp, isProd, log } from './util'
 
 // default way to get value
-const DefaultWayToGetValue = (val) => val
+const defaultWayToGetValue = (val) => val
 
 let id = 0
 
@@ -21,7 +21,7 @@ let id = 0
  * @param config
  * @returns {function(*)}
  */
-const withFormContext = (WrappedComponent, getValue = DefaultWayToGetValue, config = {}) => {
+const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, config = {}) => {
   // when WrappedComponent is already withFormContext
   if (WrappedComponent._isWithFormContext) {
     !isProd && log.warn(`If you are using the \`Proxy\` components, please check if the prop \`to\`（${WrappedComponent._cname}） is already powered with \`withFormContext\`?`, 'https://github.com/monajs/react-form/issues/2')

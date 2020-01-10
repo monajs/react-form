@@ -6,7 +6,7 @@
 
 import React, { Component } from 'react'
 import { FormDataContext, FormVerifyContext } from './core/context'
-import { isProd, performance, log, isPlainObject } from './core/util'
+import { isProd, performance, log } from './core/util'
 import PropTypes from 'prop-types'
 import Proxy from './proxy'
 import withVerifyContext from './core/withVerifyContext'
@@ -119,9 +119,7 @@ class Form extends Component {
     return (
       <FormDataContext.Provider value={formDataContextValue}>
         <FormVerifyContext.Provider value={verifyContextValue}>
-          <React.Fragment>
-            {children}
-          </React.Fragment>
+          {children}
         </FormVerifyContext.Provider>
       </FormDataContext.Provider>
     )

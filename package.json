@@ -1,6 +1,6 @@
 {
   "name": "@monajs/react-form",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "最简单的 React 表单组件",
   "scripts": {
     "start": "node ./build/webpack.dev.js",
