@@ -69,11 +69,11 @@ class Form extends Component {
     const { verifyContextValue } = this.state
     const verifyResList = []
     this.verifyBnWithOrder.forEach((verifyItem) => {
-      if (Reflect.has(verifyContextValue, verifyItem.key)) {
+      if (verifyContextValue[verifyItem.key]) {
         const verifyInfo = verifyContextValue[verifyItem.key]
         if (verifyInfo !== null) verifyResList.push(verifyInfo)
       } else {
-        const verifyInfo = verifyItem.vm.verifyHandler(verifyItem.vm.state.val)
+        const verifyInfo = verifyItem.vm.verifyHandler(verifyItem.vm.value)
         if (verifyInfo !== true) verifyResList.push(verifyInfo)
       }
     })

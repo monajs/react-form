@@ -23,6 +23,7 @@ const Home = () => {
 
   const reset = () => {
     formRef.current.reset()
+    setInput('sss')
   }
 
   return (
@@ -52,6 +53,11 @@ const Home = () => {
         </Col>
       </Row>
       <Row>
+        <Col span={8} className='p-15'>
+          <FormItem bn='id1' label='下拉框' required>
+            <Form.Proxy to={Input} bn='id1' getValue={(val) => val.target.value} value={input} />
+          </FormItem>
+        </Col>
         <If condition={input === 'ss'}>
           <Col span={8} className='p-15'>
             <FormItem bn='a[0][1].age'>
@@ -60,7 +66,7 @@ const Home = () => {
           </Col>
         </If>
         <Col span={8} className='p-15'>
-          <FormItem bn='a[0].other' label='下拉框' desc='请选择' required>
+          <FormItem bn='a[0][1].other' label='下拉框' desc='请选择' required>
             <Form.Proxy
               style={{ width: 300 }}
               to={Select}

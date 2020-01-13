@@ -36,7 +36,7 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
   class FormItemComponent extends Component {
     constructor (props) {
       super(props)
-      const { defaultValue, value, bn, verify, verifyMsg } = props
+      const { value, defaultValue, bn, verify, verifyMsg } = props
 
       this.inited = false
       this.id = id++
@@ -44,10 +44,18 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
       this.verify = verify || config.verify
       this.verifyMsg = verifyMsg || config.verifyMsg
 
-      this.devWarning()
+      // sync store component value
+      this.value = value || defaultValue
+
       this.state = {
-        val: value || defaultValue
+        key: Date.now(),
+        // mark last value change source
+        // "init": component init, "propsChange": prop of value change, "onChange": self change
+        curValueStatus: 'init',
+        value // store value from props
       }
+
+      this.devWarning()
     }
 
     compRef = React.createRef()
@@ -60,6 +68,17 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
     componentWillUnmount () {
       // cancel subscibe when already subscibed
       this.subscibeStatus && this.cancelWatcher && this.cancelWatcher(this.bn)
+    }
+
+    static getDerivedStateFromProps (nextProps, prevState) {
+      const { value } = nextProps
+      if (value !== prevState.value) {
+        return {
+          curValueStatus: 'propsChange',
+          value
+        }
+      }
+      return null
     }
 
     devWarning = () => {
@@ -85,9 +104,15 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
     // subscibe report handler
     subscibeHandler = () => {
       if (!this.reportHandler || !this.bn) return
-      const { val } = this.state
 
-      this.reportHandler(this.bn, val)
+      const { curValueStatus, value } = this.state
+      let compValue = this.value
+
+      // if last step value change from props change
+      if (curValueStatus === 'propsChange') {
+        compValue = value
+      }
+      this.reportHandler(this.bn, compValue)
     }
 
     reset = () => {
@@ -100,8 +125,10 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
       }
 
       // reset value
+      this.value = value || defaultValue
       this.setState({
-        val: value || defaultValue
+        key: Date.now(),
+        value // store original prop of value
       })
     }
 
@@ -159,21 +186,21 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
 
     changeHandler = (e) => {
       const { onChange } = this.props
-      const compVal = getValue(e)
-      this.setState(() => ({
-        val: compVal
-      }))
-      this.verifyHandler(compVal)
-      onChange && onChange(e, compVal)
+      this.value = getValue(e)
+      this.verifyHandler(this.value)
+      onChange && onChange(e, this.value)
+      this.setState({
+        curValueStatus: 'onChange'
+      })
     }
 
     render () {
-
       /* eslint-disable no-unused-vars */
-      const { bn, defaultValue, value, onChange, verify, verifyMsg, ...other } = this.props
+      const { bn, onChange, verify, verifyMsg, ...other } = this.props
       /* eslint-disable no-unused-vars */
 
-      const { val } = this.state
+      const { key } = this.state
+
       if (!this.bn) {
         return (
           // if prop `bn` missed, return the origin element
@@ -188,8 +215,10 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
               !isProd && log.warn('The Component `Form` is necessary as the container, please check if all the form member is wrapped by the `Form`?', 'https://github.com/monajs/react-form/issues/1')
               return <WrappedComponent {...this.props} />
             }
+
             formMessage = formMessage || {}
             const { report, verify, subscibeReport, cancelWatcher } = formMessage
+
             if (!this.inited) {
               this.reportHandler = report
               this.cancelWatcher = cancelWatcher
@@ -197,8 +226,9 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
               this.subscibeStatus = subscibeReport(this.bn, this)
               this.inited = true
             }
+
             return (
-              <WrappedComponent ref={this.compRef} value={val} onChange={this.changeHandler} {...other} />
+              <WrappedComponent key={key} ref={this.compRef} onChange={this.changeHandler} {...other} />
             )
           }}
         </FormDataContext.Consumer>
