@@ -5,6 +5,9 @@ export const isEmpty = (val) => {
   if (typeof val === 'number') {
     return val !== 0 && !val
   }
+  if (typeof val === 'boolean') {
+    return false
+  }
   if (val instanceof Array) {
     return val.length === 0
   }

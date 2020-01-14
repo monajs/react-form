@@ -55,7 +55,7 @@ const Home = () => {
       <Row>
         <Col span={8} className='p-15'>
           <FormItem bn='id1' label='下拉框' required>
-            <Form.Proxy to={Input} bn='id1' getValue={(val) => val.target.value} value={input} />
+            <Form.Proxy to={Input} bn='id1' verify verifyMsg='321' getValue={(val) => val.target.value} value={input} />
           </FormItem>
         </Col>
         <If condition={input === 'ss'}>

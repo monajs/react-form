@@ -13,12 +13,8 @@ const defaultWayToGetValue = (val) => val
 
 let id = 0
 
-// mark last value change source
-const CUR_VALUE_STATE = {
-  INIT_VALUE: 'init',
-  PROP_CHANGE: 'propChange',
-  ON_CHANGE: 'onChange'
-}
+// controll the all form member vm
+const formVMMap = new Map()
 
 /**
  * Form item component wrap
@@ -48,16 +44,19 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
       this.inited = false
       this.id = id++
       this.bn = bn || config.bn
+      // sync store component value
+      this.value = value || defaultValue
       this.verify = verify || config.verify
       this.verifyMsg = verifyMsg || config.verifyMsg
 
-      // sync store component value
-      this.value = value || defaultValue
+      formVMMap.set(this.id, {
+        _vm: this
+      })
 
       this.state = {
-        key: Date.now(),
-        curValueStatus: CUR_VALUE_STATE.INIT_VALUE,
-        value // store value from props
+        id: this.id,
+        value, // store the value from props
+        key: Date.now()
       }
 
       this.devWarning()
@@ -73,13 +72,17 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
     componentWillUnmount () {
       // cancel subscibe when already subscibed
       this.subscibeStatus && this.cancelWatcher && this.cancelWatcher(this.bn)
+      formVMMap.delete(this.id)
     }
 
     static getDerivedStateFromProps (nextProps, prevState) {
+      const { id } = prevState
       const { value } = nextProps
-      if (value !== prevState.value) {
+      const curForm = formVMMap.get(id)
+      if (value !== prevState.value && curForm && curForm._vm) {
+        curForm._vm.value = value
+        curForm._vm.verifyHandler(value)
         return {
-          curValueStatus: CUR_VALUE_STATE.PROP_CHANGE,
           value
         }
       }
@@ -110,12 +113,6 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
     subscibeHandler = () => {
       if (!this.reportHandler || !this.bn) return
 
-      const { curValueStatus, value } = this.state
-
-      // if last step value change from props change
-      if (curValueStatus === CUR_VALUE_STATE.PROP_CHANGE) {
-        this.value = value
-      }
       this.reportHandler(this.bn, this.value)
     }
 
@@ -131,8 +128,7 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
       // reset value
       this.value = value || defaultValue
       this.setState({
-        key: Date.now(),
-        value // store original prop of value
+        key: Date.now()
       })
     }
 
@@ -193,9 +189,6 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
       this.value = getValue(e)
       this.verifyHandler(this.value)
       onChange && onChange(e, this.value)
-      this.setState({
-        curValueStatus: CUR_VALUE_STATE.ON_CHANGE
-      })
     }
 
     render () {
