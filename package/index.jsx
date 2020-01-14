@@ -6,7 +6,7 @@
 
 import React, { Component } from 'react'
 import { FormDataContext, FormVerifyContext } from './core/context'
-import { isProd, performance, log } from './core/util'
+import { isProd, performance, log, isPlainObject } from './core/util'
 import PropTypes from 'prop-types'
 import Proxy from './proxy'
 import withVerifyContext from './core/withVerifyContext'
@@ -35,12 +35,7 @@ class Form extends Component {
   cancelWatcher = (bn) => {
     this.itemMap.delete(bn)
     this.verifyBnWithOrder = this.verifyBnWithOrder.filter((v) => v.key !== bn)
-    this.setState((prevState) => ({
-      verifyContextValue: {
-        ...prevState.verifyContextValue || {},
-        [bn]: {}
-      }
-    }))
+    this.verifyHandler(bn, true)
   }
 
   // subscibe report event
@@ -69,13 +64,10 @@ class Form extends Component {
     const { verifyContextValue } = this.state
     const verifyResList = []
     this.verifyBnWithOrder.forEach((verifyItem) => {
-      if (verifyContextValue[verifyItem.key]) {
-        const verifyInfo = verifyContextValue[verifyItem.key]
-        if (verifyInfo !== null) verifyResList.push(verifyInfo)
-      } else {
-        const verifyInfo = verifyItem.vm.verifyHandler(verifyItem.vm.value)
-        if (verifyInfo !== true) verifyResList.push(verifyInfo)
-      }
+      const verifyInfo = Reflect.has(verifyContextValue, verifyItem.key)
+        ? verifyContextValue[verifyItem.key]
+        : verifyItem.vm.verifyHandler(verifyItem.vm.value)
+      if (isPlainObject(verifyInfo)) verifyResList.push(verifyInfo)
     })
     return verifyResList
   }
@@ -104,12 +96,17 @@ class Form extends Component {
   // collect verify info
   verifyHandler = (bn, verifyInfo) => {
     // true means pass
-    this.setState((prevState) => ({
-      verifyContextValue: {
-        ...prevState.verifyContextValue || {},
-        [bn]: verifyInfo === true ? null : verifyInfo
+    this.setState((prevState) => {
+      const { verifyContextValue = {} } = prevState
+      if (verifyInfo === true) {
+        delete verifyContextValue[bn]
+      } else {
+        verifyContextValue[bn] = verifyInfo
       }
-    }))
+      return {
+        verifyContextValue: { ...verifyContextValue }
+      }
+    })
   }
 
   render () {

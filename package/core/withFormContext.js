@@ -13,6 +13,13 @@ const defaultWayToGetValue = (val) => val
 
 let id = 0
 
+// mark last value change source
+const CUR_VALUE_STATE = {
+  INIT_VALUE: 'init',
+  PROP_CHANGE: 'propChange',
+  ON_CHANGE: 'onChange'
+}
+
 /**
  * Form item component wrap
  * with form context
@@ -49,9 +56,7 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
 
       this.state = {
         key: Date.now(),
-        // mark last value change source
-        // "init": component init, "propsChange": prop of value change, "onChange": self change
-        curValueStatus: 'init',
+        curValueStatus: CUR_VALUE_STATE.INIT_VALUE,
         value // store value from props
       }
 
@@ -74,7 +79,7 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
       const { value } = nextProps
       if (value !== prevState.value) {
         return {
-          curValueStatus: 'propsChange',
+          curValueStatus: CUR_VALUE_STATE.PROP_CHANGE,
           value
         }
       }
@@ -106,13 +111,12 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
       if (!this.reportHandler || !this.bn) return
 
       const { curValueStatus, value } = this.state
-      let compValue = this.value
 
       // if last step value change from props change
-      if (curValueStatus === 'propsChange') {
-        compValue = value
+      if (curValueStatus === CUR_VALUE_STATE.PROP_CHANGE) {
+        this.value = value
       }
-      this.reportHandler(this.bn, compValue)
+      this.reportHandler(this.bn, this.value)
     }
 
     reset = () => {
@@ -190,7 +194,7 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
       this.verifyHandler(this.value)
       onChange && onChange(e, this.value)
       this.setState({
-        curValueStatus: 'onChange'
+        curValueStatus: CUR_VALUE_STATE.ON_CHANGE
       })
     }
 
