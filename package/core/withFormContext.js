@@ -44,8 +44,6 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
       this.inited = false
       this.id = id++
       this.bn = bn || config.bn
-      // sync store component value
-      this.value = value || defaultValue
       this.verify = verify || config.verify
       this.verifyMsg = verifyMsg || config.verifyMsg
 
@@ -56,6 +54,7 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
       this.state = {
         id: this.id,
         value, // store the value from props
+        val: value || defaultValue,
         key: Date.now()
       }
 
@@ -80,10 +79,11 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
       const { value } = nextProps
       const curForm = formVMMap.get(id)
       if (value !== prevState.value && curForm && curForm._vm) {
-        curForm._vm.value = value
+        // curForm._vm.value = value
         curForm._vm.verifyHandler(value)
         return {
-          value
+          value,
+          val: value
         }
       }
       return null
@@ -113,7 +113,9 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
     subscibeHandler = () => {
       if (!this.reportHandler || !this.bn) return
 
-      this.reportHandler(this.bn, this.value)
+      const { val } = this.state
+
+      this.reportHandler(this.bn, val)
     }
 
     reset = () => {
@@ -126,8 +128,9 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
       }
 
       // reset value
-      this.value = value || defaultValue
       this.setState({
+        value,
+        val: value || defaultValue,
         key: Date.now()
       })
     }
@@ -186,22 +189,25 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
 
     changeHandler = (e) => {
       const { onChange } = this.props
-      this.value = getValue(e)
-      this.verifyHandler(this.value)
-      onChange && onChange(e, this.value)
+      const value = getValue(e)
+      this.verifyHandler(value)
+      onChange && onChange(e, value)
+      this.setState({
+        val: value
+      })
     }
 
     render () {
       /* eslint-disable no-unused-vars */
-      const { bn, onChange, verify, verifyMsg, ...other } = this.props
+      const { bn, value, onChange, verify, verifyMsg, ...other } = this.props
       /* eslint-disable no-unused-vars */
 
-      const { key } = this.state
+      const { key, val } = this.state
 
       if (!this.bn) {
         return (
           // if prop `bn` missed, return the origin element
-          <WrappedComponent {...this.props} />
+          <WrappedComponent value={value} {...this.props} />
         )
       }
 
@@ -225,7 +231,7 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
             }
 
             return (
-              <WrappedComponent key={key} ref={this.compRef} onChange={this.changeHandler} {...other} />
+              <WrappedComponent value={val} key={key} ref={this.compRef} onChange={this.changeHandler} {...other} />
             )
           }}
         </FormDataContext.Consumer>

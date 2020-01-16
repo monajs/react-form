@@ -66,7 +66,7 @@ class Form extends Component {
     this.verifyBnWithOrder.forEach((verifyItem) => {
       const verifyInfo = Reflect.has(verifyContextValue, verifyItem.key)
         ? verifyContextValue[verifyItem.key]
-        : verifyItem.vm.verifyHandler(verifyItem.vm.value)
+        : verifyItem.vm.verifyHandler(verifyItem.vm.state.val)
       if (isPlainObject(verifyInfo)) verifyResList.push(verifyInfo)
     })
     return verifyResList
