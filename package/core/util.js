@@ -21,6 +21,10 @@ export const isFunction = (arg) => {
   return arg instanceof Function
 }
 
+export const isBoolean = (arg) => {
+  return typeof arg === 'boolean'
+}
+
 export const isRegExp = (arg) => {
   return arg instanceof RegExp
 }

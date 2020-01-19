@@ -6,7 +6,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { FormDataContext } from './context'
-import { isEmpty, isFunction, isRegExp, isProd, log } from './util'
+import { isEmpty, isFunction, isRegExp, isBoolean, isProd, log } from './util'
 
 // default way to get value
 const defaultWayToGetValue = (val) => val
@@ -100,12 +100,15 @@ const withFormContext = (WrappedComponent, getValue = defaultWayToGetValue, conf
         }
         return
       }
-      if (this.verify && !this.verifyMsg) {
+      if (this.verify && this.verifyMsg === undefined) {
         log.warn('The prop `verifyMsg` is required with form member when `verify` is accessed, but its value is `undefined`.', 'https://github.com/monajs/react-form/issues/4')
         return
       }
-      if (!this.verify && this.verifyMsg) {
+      if (this.verify === undefined && this.verifyMsg) {
         log.warn('The prop `verifyMsg` is unnecessary with form member when `verify` is not accessed.', 'https://github.com/monajs/react-form/issues/5')
+      }
+      if (this.verify !== undefined && ( !isBoolean(this.verify) && !isFunction(this.verify) && !isRegExp(this.verify))) {
+        log.warn('The prop `verify` only support three formats （Boolean | Function | Regular）,please check it.')
       }
     }
 

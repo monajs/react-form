@@ -36,7 +36,7 @@ const Home = () => {
         </Col>
         <Col span={8} className='p-15'>
           <FormItem bn='id' label='下拉框' required>
-            <Form.Proxy to={Input} bn='id' getValue={(val) => val.target.value} verify={(val) => val === 'aaa'} verifyMsg={(verify) => verify.val} />
+            <Form.Proxy to={Input} bn='id' getValue={(val) => val.target.value} verify={(val) => val.length === 2} verifyMsg={(verify) => verify.val} />
           </FormItem>
         </Col>
         <Col span={8} className='p-15'>
